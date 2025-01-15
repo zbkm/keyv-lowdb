@@ -3,6 +3,7 @@
   "module": "src/index.ts",
   "type": "module",
   "devDependencies": {
+    "@keyv/test-suite": "^2.0.3",
     "@types/bun": "latest",
     "keyv": "^5.2.3"
   },
