@@ -1,1 +1,3 @@
-console.log("Hello via Bun!");
+import KeyvLowDB from "./KeyvLowDB.ts";
+
+module.exports = KeyvLowDB;
