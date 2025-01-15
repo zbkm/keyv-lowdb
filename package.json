@@ -5,7 +5,8 @@
   "devDependencies": {
     "@keyv/test-suite": "^2.0.3",
     "@types/bun": "latest",
-    "keyv": "^5.2.3"
+    "keyv": "^5.2.3",
+    "lowdb": "^7.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
