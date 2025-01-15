@@ -6,7 +6,11 @@
     "@keyv/test-suite": "^2.0.3",
     "@types/bun": "latest",
     "keyv": "^5.2.3",
-    "lowdb": "^7.0.1"
+    "lowdb": "^7.0.1",
+    "vitest": "^2.0.5"
+  },
+  "scripts": {
+    "test": "vitest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
