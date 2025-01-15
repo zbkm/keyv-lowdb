@@ -6,7 +6,8 @@ import EventEmitter from "events";
 
 export const defaultOpts: Options = {
     lowdb: new Low<LowDBData>(new Memory(), {__keyv: {}}),
-    namespace: "cache"
+    namespace: "cache",
+    dialect: "etcd" // for iteration to work
 };
 
 export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
@@ -82,6 +83,17 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         return typeof this.opts.lowdb.data.__keyv[this.namespace][key].expire === "number" && (this.opts.lowdb.data.__keyv[this.namespace][key].expire! <= Date.now());
     }
 
+    public async* iterator<Value>(namespace?: string): AsyncGenerator<[string, Value | undefined], void, unknown> {
+        for (const key of Object.keys(this.opts.lowdb.data.__keyv[namespace ?? this.namespace])) {
+            const value = await this.get(key) as Value;
+
+            if (value === undefined) {
+                continue;
+            }
+
+            yield [key, value];
+        }
+    }
 }
 
 export default KeyvLowDB;

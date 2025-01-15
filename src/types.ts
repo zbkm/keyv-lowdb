@@ -10,4 +10,5 @@ export type LowDBData = {
 
 export type Options = {
     lowdb: Low<LowDBData>
+    dialect: "etcd"
 } & KeyvOptions;
