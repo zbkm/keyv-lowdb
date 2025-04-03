@@ -1,0 +1,22 @@
+name: npm deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  npm-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          registry-url: https://registry.npmjs.org/
+      - id: get_version
+        uses: battila7/get-version-action@v2
+      - run: bun install
+      - run: bun run build
+      - run: jq '.version="${{ steps.get_version.outputs.version-without-v }}"' package.json > tmp.json && mv tmp.json package.json
+      - run: bun publish --access public
+        env:
+          NPM_CONFIG_TOKEN: ${{ secrets.npm_token }}
