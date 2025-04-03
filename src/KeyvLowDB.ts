@@ -4,12 +4,16 @@ import {Low, Memory} from "lowdb";
 import EventEmitter from "events";
 
 
-export const defaultOpts: Options = {
+const defaultOpts: Options = {
     lowdb: new Low<LowDBData>(new Memory(), {__keyv: {}}),
     namespace: "cache",
     dialect: "etcd" // for iteration to work
 };
 
+/**
+ * @name KeyvLowDB
+ * @description LowDB adapter for Keyv storage
+ */
 export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
     namespace: string;
     opts: Options;
@@ -20,11 +24,19 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         this.opts = Object.assign({}, defaultOpts, options);
     }
 
+    /**
+     * Clear base
+     */
     public async clear(): Promise<void> {
         this.opts.lowdb.data.__keyv[this.namespace] = {};
         await this.opts.lowdb.write();
     }
 
+    /**
+     * Delete element from base
+     * @param key element key
+     * @returns Whether the element was deleted. False if the element does not exist
+     */
     public async delete(key: string): Promise<boolean> {
         if (!await this.has(key)) {
             return false;
@@ -34,6 +46,11 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         return true;
     }
 
+    /**
+     * Delete many elements from base
+     * @param keys elements keys
+     * @returns Whether the all elements was deleted. False if any element does not exist
+     */
     public async deleteMany(keys: string[]): Promise<boolean> {
         const deletePromises: Promise<boolean>[] = keys.map((key) =>
             this.delete(key)
@@ -42,10 +59,18 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         return results.every((result) => result);
     }
 
+    /**
+     * @inheritDoc
+     */
     public async disconnect(): Promise<void> {
         return;
     }
 
+    /**
+     * Get element from base
+     * @param key element key
+     * @returns element value
+     */
     public async get<Value>(key: string): Promise<StoredData<Value> | undefined> {
         const value = this.opts.lowdb.data.__keyv[this.namespace][key];
         if (!value) {
@@ -58,6 +83,11 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         }
     }
 
+    /**
+     * Get many elements from base
+     * @param keys elements keys
+     * @returns elements values
+     */
     public async getMany<Value>(keys: string[]): Promise<StoredData<Value | undefined>[]> {
         return await Promise.all(
             keys.map(async (key) => {
@@ -66,10 +96,21 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         );
     }
 
+    /**
+     * Check if an element exists in the database
+     * @param key element key
+     * @returns
+     */
     public async has(key: string): Promise<boolean> {
         return this.opts.lowdb.data.__keyv[this.namespace].hasOwnProperty(key);
     }
 
+    /**
+     * Set the value of an element
+     * @param key element key
+     * @param value element value
+     * @param ttl ttl element lifespan (optional)
+     */
     public async set(key: string, value: any, ttl?: number): Promise<void> {
         const expire = ttl ? Date.now() + ttl : undefined;
         this.opts.lowdb.data.__keyv[this.namespace][key] = {
@@ -79,10 +120,18 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         await this.opts.lowdb.write();
     }
 
+    /**
+     * Check if the element is expired
+     * @param key element key
+     * @protected
+     */
     protected isExpired(key: string): boolean {
         return typeof this.opts.lowdb.data.__keyv[this.namespace][key].expire === "number" && (this.opts.lowdb.data.__keyv[this.namespace][key].expire! <= Date.now());
     }
 
+    /**
+     * @param namespace namespace name
+     */
     public async* iterator<Value>(namespace?: string): AsyncGenerator<[string, Value | undefined], void, unknown> {
         for (const key of Object.keys(this.opts.lowdb.data.__keyv[namespace ?? this.namespace])) {
             const value = await this.get(key) as Value;
