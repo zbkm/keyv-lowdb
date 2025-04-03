@@ -1,16 +1,29 @@
 {
   "name": "keyv-lowdb",
-  "module": "src/index.ts",
+  "version": "0.0.0",
   "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "build": "unbuild "
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "dependencies": {
+    "keyv": "^5.2.3",
+    "lowdb": "^7.0.1"
+  },
   "devDependencies": {
     "@keyv/test-suite": "^2.0.3",
     "@types/bun": "latest",
-    "keyv": "^5.2.3",
-    "lowdb": "^7.0.1",
+    "tsup": "^8.4.0",
+    "unbuild": "^3.5.0",
     "vitest": "^2.0.5"
-  },
-  "scripts": {
-    "test": "vitest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

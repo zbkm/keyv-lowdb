@@ -1,4 +1,4 @@
-import KeyvLowDB from "../src/KeyvLowDB.ts";
+import KeyvLowDB from "../src";
 import keyvTestSuite, {keyvIteratorTests} from "@keyv/test-suite";
 import Keyv from "keyv";
 import * as test from 'vitest';
