@@ -14,6 +14,7 @@
       "require": "./dist/index.cjs"
     }
   },
+  "files": ["dist", "src"],
   "dependencies": {
     "keyv": "^5.2.3",
     "lowdb": "^7.0.1"
