@@ -22,6 +22,10 @@ export class KeyvLowDB extends EventEmitter implements KeyvStoreAdapter {
         super();
         this.namespace = options?.namespace ?? "cache";
         this.opts = Object.assign({}, defaultOpts, options);
+
+        if (!this.opts.lowdb.data.__keyv[this.namespace]) {
+            this.opts.lowdb.data.__keyv[this.namespace] = {};
+        }
     }
 
     /**
