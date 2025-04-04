@@ -10,17 +10,17 @@ npm install --save keyv lowdb keyv-lowdb
 
 ### Usage
 ```typescript
-import {KeyvLowDB} from "keyv-lowdb";
+import {KeyvLowDB, type LowDBData} from "keyv-lowdb";
 import {Low} from "lowdb";
 import {JSONFile} from "lowdb/node";
 
-const initialStorage = {
+const initialStorage: LowDBData = {
     __keyv: {} // must be in the database for store data
 };
 
-const keyv = new KeyvLowDB({
-    lowdb:  new Low(new JSONFile("file.json"), initialStorage)
-});
+const lowdb = new Low<LowDBData>(new JSONFile("file.json"), initialStorage);
+
+const keyv = new KeyvLowDB({lowdb});
 
 await keyv.set("name", "value", 1000);
 
