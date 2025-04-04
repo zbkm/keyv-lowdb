@@ -22,7 +22,6 @@
   "devDependencies": {
     "@keyv/test-suite": "^2.0.3",
     "@types/bun": "latest",
-    "tsup": "^8.4.0",
     "unbuild": "^3.5.0",
     "vitest": "^2.0.5"
   },
